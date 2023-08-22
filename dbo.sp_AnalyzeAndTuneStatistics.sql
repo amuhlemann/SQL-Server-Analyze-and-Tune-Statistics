@@ -268,6 +268,15 @@ BEGIN
 	CROSS APPLY	sys.dm_db_stats_properties (so.[object_id],st.stats_id) stp
 	WHERE		so.[type]						IN ('U','V')
 	AND			so.is_ms_shipped				= 0
+	/*Note: exclude node and edge tables*/
+	AND			NOT EXISTS
+	(
+		SELECT	1
+		FROM	sys.tables tab
+		WHERE	tab.[object_id] = so.[object_id]
+		AND		tab.is_node = 0
+		AND		tab.is_edge = 0
+	)
 	/*Note: exclude statistics having a filter, otherwise we should use "filter_definition" when checking data*/
 	AND			st.has_filter					= 0
 	AND			TYPE_NAME(sc.system_type_id)	NOT IN ('xml','hierarchyid','timestamp','geometry','geography','sql_variant')
