@@ -274,8 +274,8 @@ BEGIN
 		SELECT	1
 		FROM	sys.tables tab
 		WHERE	tab.[object_id] = so.[object_id]
-		AND		tab.is_node = 0
-		AND		tab.is_edge = 0
+		AND		tab.is_node = 1
+		AND		tab.is_edge = 1
 	)
 	/*Note: exclude statistics having a filter, otherwise we should use "filter_definition" when checking data*/
 	AND			st.has_filter					= 0
