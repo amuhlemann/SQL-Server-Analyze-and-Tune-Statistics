@@ -703,7 +703,8 @@ DEALLOCATE HistogramCursor;';
 		(
 			SELECT	CASE
 						WHEN equal_rows_estimated>equal_rows_actual THEN
-							equal_rows_estimated/equal_rows_actual
+							/*Note: equal_rows_actual may be 0 if the statistic references values that do not exist anymore*/
+							equal_rows_estimated/IIF(equal_rows_actual=0,1,equal_rows_actual)
 						ELSE
 							equal_rows_actual/equal_rows_estimated
 					END AS equal_rows_difference_factor
@@ -711,6 +712,7 @@ DEALLOCATE HistogramCursor;';
 						WHEN avg_range_rows_estimated>avg_range_rows_actual THEN
 							avg_range_rows_estimated/avg_range_rows_actual
 						ELSE
+							/*Note: avg_range_rows_estimated is never 0 (minimum 1)*/
 							avg_range_rows_actual/avg_range_rows_estimated
 					END AS avg_range_rows_difference_factor
 					,cov
@@ -766,7 +768,8 @@ DEALLOCATE HistogramCursor;';
 					,avg_range_rows_actual
 					,CASE
 						WHEN equal_rows_estimated>equal_rows_actual THEN
-							equal_rows_estimated/equal_rows_actual
+							/*Note: equal_rows_actual may be 0 if the statistic references values that do not exist anymore*/
+							equal_rows_estimated/IIF(equal_rows_actual=0,1,equal_rows_actual)
 						ELSE
 							equal_rows_actual/equal_rows_estimated
 					END AS equal_rows_difference_factor
@@ -774,6 +777,7 @@ DEALLOCATE HistogramCursor;';
 						WHEN avg_range_rows_estimated>avg_range_rows_actual THEN
 							avg_range_rows_estimated/avg_range_rows_actual
 						ELSE
+							/*Note: avg_range_rows_estimated is never 0 (minimum 1)*/
 							avg_range_rows_actual/avg_range_rows_estimated
 					END AS avg_range_rows_difference_factor
 					,cov
